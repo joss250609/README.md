@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroDeli - Conectando agricultores y consumidores</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        form input, form textarea, form select {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        form button {
+            background-color: #2e7d32;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        form button:hover {
+            background-color: #1b5e20;
+        }
+        .profiles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .profile-card h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .profile-card p {
+            margin: 0.5rem 0;
+        }
+        .sales-history {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #1b5e20;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AgroDeli</h1>
+        <p>Conectando agricultores con consumidores</p>
+    </header>
+
+    <div class="container">
+        <section class="form-section">
+            <h2>Registro de Agricultores</h2>
+            <form id="farmerForm">
+                <label for="farmerName">Nombre completo:</label>
+                <input type="text" id="farmerName" required>
+
+                <label for="farmName">Nombre de la finca/emprendimiento:</label>
+                <input type="text" id="farmName" required>
+
+                <label for="location">Ubicación:</label>
+                <input type="text" id="location" required>
+
+                <label for="products">Productos que ofrece:</label>
+                <input type="text" id="products" required>
+
+                <label for="description">Descripción:</label>
+                <textarea id="description" rows="4" required></textarea>
+
+                <label for="salesHistory">Historial de ventas (últimos meses):</label>
+                <textarea id="salesHistory" rows="4" required></textarea>
+
+                <button type="submit">Registrarse</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Agricultores Registrados</h2>
+            <div class="profiles-container" id="profilesContainer">
+                <!-- Los perfiles aparecerán aquí dinámicamente -->
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 AgroDeli - Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        // Array para almacenar los perfiles (en una aplicación real usarías una base de datos)
+        const farmers = [];
+
+        // Elementos del DOM
+        const form = document.getElementById('farmerForm');
+        const profilesContainer = document.getElementById('profilesContainer');
+
+        // Manejar el envío del formulario
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Obtener valores del formulario
+            const farmerName = document.getElementById('farmerName').value;
+            const farmName = document.getElementById('farmName').value;
+            const location = document.getElementById('location').value;
+            const products = document.getElementById('products').value;
+            const description = document.getElementById('description').value;
+            const salesHistory = document.getElementById('salesHistory').value;
+
+            // Crear objeto con los datos
+            const farmer = {
+                id: Date.now(), // ID único temporal
+                farmerName,
+                farmName,
+                location,
+                products,
+                description,
+                salesHistory,
+                registrationDate: new Date().toLocaleDateString()
+            };
+
+            // Agregar al array
+            farmers.push(farmer);
+
+            // Actualizar la visualización
+            displayFarmers();
+
+            // Limpiar el formulario
+            form.reset();
+
+            // Mostrar mensaje de éxito
+            alert('¡Registro exitoso! Gracias por unirte a AgroDeli.');
+        });
+
+        // Función para mostrar los agricultores
+        function displayFarmers() {
+            profilesContainer.innerHTML = '';
+
+            farmers.forEach(farmer => {
+                const farmerCard = document.createElement('div');
+                farmerCard.className = 'profile-card';
+                farmerCard.innerHTML = `
+                    <h3>${farmer.farmName}</h3>
+                    <p><strong>Agricultor:</strong> ${farmer.farmerName}</p>
+                    <p><strong>Ubicación:</strong> ${farmer.location}</p>
+                    <p><strong>Productos:</strong> ${farmer.products}</p>
+                    <p>${farmer.description}</p>
+                    <div class="sales-history">
+                        <p><strong>Historial de ventas:</strong></p>
+                        <p>${farmer.salesHistory}</p>
+                    </div>
+                    <p><small>Registrado el: ${farmer.registrationDate}</small></p>
+                `;
+                profilesContainer.appendChild(farmerCard);
+            });
+        }
+
+        // Mostrar cualquier perfil existente al cargar la página
+        displayFarmers();
+    </script>
+</body>
+</html>
